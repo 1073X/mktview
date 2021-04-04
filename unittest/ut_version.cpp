@@ -3,11 +3,11 @@
 #include <iostream>
 #include <meta/info.hpp>
 
-#include "project/version.hpp"
+#include "mktview/version.hpp"
 
 TEST(ut_version, version) {
-    std::cout << miu::project::version() << std::endl;
-    std::cout << miu::project::build_info() << std::endl;
+    std::cout << miu::mktview::version() << std::endl;
+    std::cout << miu::mktview::build_info() << std::endl;
 
     std::cout << miu::meta::info() << std::endl;
 }

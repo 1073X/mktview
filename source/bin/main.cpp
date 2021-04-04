@@ -1,18 +1,39 @@
 
-#include <cstdint>
-#include <iostream>
+#include <cfg/cmd_source.hpp>
+#include <cfg/settings.hpp>
+#include <log/log.hpp>
+#include <meta/info.hpp>
 
-#include "project/lib.hpp"
+#include "ref/reg_var_str.hpp"
+#include "ref/version.hpp"
 
-namespace miu::project {
-extern std::string_view version();
-extern std::string_view build_info();
-}    // namespace miu::project
+int32_t main(int32_t argc, const char* argv[]) try {
+    miu::ref::reg_var_str();
+    miu::log::reset(miu::log::severity::DEBUG, 2048);
 
-int32_t
-main(int32_t, char*[]) {
-    std::cout << "version: " << miu::project::version() << std::endl;
-    std::cout << "build_info: " << miu::project::build_info() << std::endl;
-    miu::project::lib_func();
+    miu::cfg::cmd_source source { argc, argv };
+    miu::cfg::settings settings { &source };
+
+    if (settings.optional<bool>("version", false)) {
+        std::cout << miu::ref::version() << std::endl;
+
+    } else if (settings.optional<bool>("usage", false)) {
+        std::cout << miu::ref::version() << std::endl;
+        std::cout << miu::ref::build_info() << std::endl;
+        std::cout << miu::meta::info() << ": subscribe to mkt adapter" << std::endl;
+        std::cout << "\nUsage: mktview <mkt adapter name>" << std::endl;
+
+    } else {
+        miu::log::dump();
+    }
+
     return 0;
+} catch (std::exception const& err) {
+    miu::log::dump();
+    std::cerr << err.what() << std::endl;
+    return -1;
+} catch (...) {
+    miu::log::dump();
+    std::cerr << "unknown error" << std::endl;
+    return -1;
 }
